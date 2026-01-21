@@ -1,0 +1,3 @@
+[submodule "OstaraQRGen"]
+	path = OstaraQRGen
+	url = git@github.com:OstaraTime/OstaraQRGen.git

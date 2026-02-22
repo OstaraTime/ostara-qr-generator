@@ -9,6 +9,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug secrets presence
+        run: |
+          echo "USER set? ${{ secrets.DH_USER != '' }}"
+          echo "PASS set? ${{ secrets.DH_PASS != '' }}"
+          echo "REPO set? ${{ secrets.DH_REPO != '' }}"
       - name: Checkout code
         uses: actions/checkout@v4
 

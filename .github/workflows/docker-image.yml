@@ -1,0 +1,28 @@
+name: Build and Push Image
+
+on:
+  push:
+    branches: [ "release" ]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t ${{secrets.DH_REPO}}:${{ github.sha }} .
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DH_PASS }}" | docker login \
+             -u "${{ secrets.DH_USER }}" --password-stdin
+
+      - name: Tag image
+        run: docker tag myapp:latest \
+             ${{secrets.DH_REPO}}:latest
+
+      - name: Push image
+        run: docker push \
+             ${{secrets.DH_REPO}}:latest

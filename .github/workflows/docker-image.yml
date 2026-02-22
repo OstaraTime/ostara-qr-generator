@@ -9,22 +9,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug secrets presence
+        run: |
+          echo "USER set? ${{ vars.DH_USER != '' }}"
+          echo "PASS set? ${{ secrets.DH_PASS != '' }}"
+          echo "REPO set? ${{ vars.DH_REPO != '' }}"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Login to Docker Hub
-        run: echo "${{ secrets.DH_PASS }}" | docker login \
-             -u "${{ secrets.DH_USER }}" --password-stdin
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DH_USER }}
+          password: ${{ secrets.DH_PASS }}
 
       - name: Build image
-        run: docker build -t ${{ secrets.DH_REPO }}:${{ github.sha }} .
+        run: docker build -t ${{ vars.DH_REPO }}:${{ github.sha }} .
 
       - name: Tag latest
-        run: docker tag \
-             ${{ secrets.DH_REPO }}:${{ github.sha }} \
-             ${{ secrets.DH_REPO }}:latest
+        run: |
+          docker tag "${{ vars.DH_REPO }}:${{ github.sha }}" "${{ vars.DH_REPO }}:latest"
 
       - name: Push images
         run: |
-          docker push ${{ secrets.DH_REPO }}:${{ github.sha }}
-          docker push ${{ secrets.DH_REPO }}:latest
+          docker push ${{ vars.DH_REPO }}:${{ github.sha }}
+          docker push ${{ vars.DH_REPO }}:latest

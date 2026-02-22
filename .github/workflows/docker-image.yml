@@ -25,12 +25,12 @@ jobs:
           password: ${{ secrets.DH_PASS }}
 
       - name: Build image
-        run: docker build -t ${{ secrets.DH_REPO }}:${{ github.sha }} .
+        run: docker build -t ${{ vars.DH_REPO }}:${{ github.sha }} .
 
       - name: Tag latest
         run: docker tag \
-             ${{ secrets.DH_REPO }}:${{ github.sha }} \
-             ${{ secrets.DH_REPO }}:latest
+             ${{ vars.DH_REPO }}:${{ github.sha }} \
+             ${{ vars.DH_REPO }}:latest
 
       - name: Push images
         run: |
